@@ -24,3 +24,9 @@ target/
 
 ### Environment ###
 .env
+
+### Local secrets ###
+# Contains real DB credentials for local development - never commit this.
+# Copy application-dev.yml.example to application-dev.yml and fill it in.
+src/main/resources/application-dev.yml
+src/main/resources/application-local.yml

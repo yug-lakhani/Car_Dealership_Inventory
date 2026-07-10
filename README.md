@@ -70,23 +70,34 @@ Car_Dealership_Inventory/
 
 ### Backend (Server)
 
-1. Create a PostgreSQL database:
+1. Create a PostgreSQL database (a local instance, or a managed one such as
+   Aiven/Supabase/RDS):
    ```sql
    CREATE DATABASE dealership_inventory;
    ```
-2. Configure environment variables (or edit `application-dev.yml` directly):
+2. Copy `Server/src/main/resources/application-dev.yml.example` to
+   `application-dev.yml` in that same folder, and fill in your real
+   connection string, username, and password:
    ```
-   DB_USERNAME=postgres
-   DB_PASSWORD=postgres
+   cd Server/src/main/resources
+   cp application-dev.yml.example application-dev.yml
+   ```
+   `application-dev.yml` is listed in `.gitignore` and will **never** be
+   committed, so it's safe to put real credentials there. Alternatively,
+   set `DB_USERNAME` / `DB_PASSWORD` as environment variables and leave the
+   example file's placeholders as-is.
+3. Set a JWT secret (env var, or add it under `app.jwt.secret` in your
+   `application-dev.yml`):
+   ```
    JWT_SECRET=replace-with-a-long-random-secret
    ```
-3. Run the API:
+4. Run the API:
    ```
    cd Server
    ./mvnw spring-boot:run
    ```
    The API will start on `http://localhost:8080`.
-4. Run the backend test suite:
+5. Run the backend test suite:
    ```
    ./mvnw test
    ```

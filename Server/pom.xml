@@ -20,6 +20,12 @@
     <properties>
         <java.version>17</java.version>
         <jjwt.version>0.12.6</jjwt.version>
+        <!-- Spring Boot 3.3.4's managed Lombok (1.18.34) and Mockito (5.11.0)
+             both predate JDK 24 support; pin newer versions explicitly so
+             local builds work on newer JDKs. -->
+        <lombok.version>1.18.38</lombok.version>
+        <mockito.version>5.18.0</mockito.version>
+        <byte-buddy.version>1.17.5</byte-buddy.version>
     </properties>
 
     <dependencies>
@@ -124,6 +130,30 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- JDK 23+ no longer auto-discovers annotation processors on the
+                         classpath, so Lombok must be registered explicitly here. -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- JDK 21+ restricts an agent self-attaching to its own JVM;
+                         Mockito's inline mock maker needs this to instrument classes. -->
+                    <argLine>-Djdk.attach.allowAttachSelf=true</argLine>
                 </configuration>
             </plugin>
         </plugins>
