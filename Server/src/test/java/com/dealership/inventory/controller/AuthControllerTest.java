@@ -1,8 +1,11 @@
 package com.dealership.inventory.controller;
 
+import com.dealership.inventory.dto.request.LoginRequest;
 import com.dealership.inventory.dto.request.RegisterRequest;
+import com.dealership.inventory.dto.response.LoginResponse;
 import com.dealership.inventory.dto.response.RegisterResponse;
 import com.dealership.inventory.exception.EmailAlreadyExistsException;
+import com.dealership.inventory.exception.InvalidCredentialsException;
 import com.dealership.inventory.security.JwtAuthFilter;
 import com.dealership.inventory.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -148,6 +151,71 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{not-valid-json"))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(authService);
+    }
+
+    // --- login --------------------------------------------------------
+
+    @Test
+    void login_returns200Ok_withTokenAndUserInfo_whenCredentialsAreValid() throws Exception {
+        LoginRequest request = new LoginRequest("john.doe@example.com", "SecurePass123");
+        LoginResponse response = new LoginResponse("signed.jwt.token", 1L, "john.doe", "john.doe@example.com", "USER");
+
+        when(authService.login(any(LoginRequest.class))).thenReturn(response);
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("signed.jwt.token"))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.username").value("john.doe"))
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"))
+                .andExpect(jsonPath("$.role").value("USER"));
+    }
+
+    @Test
+    void login_returns401Unauthorized_whenCredentialsAreInvalid() throws Exception {
+        LoginRequest request = new LoginRequest("john.doe@example.com", "WrongPassword");
+        when(authService.login(any(LoginRequest.class))).thenThrow(new InvalidCredentialsException());
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void login_returns400BadRequest_whenEmailIsInvalid() throws Exception {
+        String invalidPayload = "{\"email\":\"not-an-email\",\"password\":\"SecurePass123\"}";
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidPayload))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(authService);
+    }
+
+    @Test
+    void login_returns400BadRequest_whenPasswordIsBlank() throws Exception {
+        String invalidPayload = "{\"email\":\"john.doe@example.com\",\"password\":\"\"}";
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidPayload))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(authService);
+    }
+
+    @Test
+    void login_returns400BadRequest_whenRequestBodyIsEmpty() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(""))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(authService);

@@ -1,11 +1,16 @@
 package com.dealership.inventory.service.impl;
 
+import com.dealership.inventory.dto.request.LoginRequest;
 import com.dealership.inventory.dto.request.RegisterRequest;
+import com.dealership.inventory.dto.response.LoginResponse;
 import com.dealership.inventory.dto.response.RegisterResponse;
 import com.dealership.inventory.entity.Role;
 import com.dealership.inventory.entity.User;
 import com.dealership.inventory.exception.EmailAlreadyExistsException;
+import com.dealership.inventory.exception.InvalidCredentialsException;
 import com.dealership.inventory.repository.UserRepository;
+import com.dealership.inventory.security.JwtService;
+import com.dealership.inventory.security.UserDetailsFactory;
 import com.dealership.inventory.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final JwtService jwtService;
 
     @Override
     public RegisterResponse register(RegisterRequest request) {
@@ -40,5 +46,19 @@ public class AuthServiceImpl implements AuthService {
         // records have no setters - only a canonical constructor. Mapped
         // manually instead; see RegisterResponse.from for details.
         return RegisterResponse.from(savedUser);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(InvalidCredentialsException::new);
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+
+        String token = jwtService.generateToken(UserDetailsFactory.from(user));
+
+        return LoginResponse.of(token, user);
     }
 }

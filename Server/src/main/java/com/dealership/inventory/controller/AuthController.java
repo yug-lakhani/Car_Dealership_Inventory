@@ -1,6 +1,8 @@
 package com.dealership.inventory.controller;
 
+import com.dealership.inventory.dto.request.LoginRequest;
 import com.dealership.inventory.dto.request.RegisterRequest;
+import com.dealership.inventory.dto.response.LoginResponse;
 import com.dealership.inventory.dto.response.RegisterResponse;
 import com.dealership.inventory.service.AuthService;
 import jakarta.validation.Valid;
@@ -27,5 +29,11 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         RegisterResponse response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

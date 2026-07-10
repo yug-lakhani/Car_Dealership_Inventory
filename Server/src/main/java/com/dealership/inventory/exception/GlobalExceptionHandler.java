@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, ex.getMessage()));
+    }
+
+    /**
+     * Raised by {@code @PreAuthorize} (e.g. an authenticated non-admin
+     * calling an admin-only endpoint). Without this handler it would fall
+     * through to {@link #handleUnexpectedError}, since Spring MVC's
+     * {@code @ExceptionHandler} resolution runs before the exception ever
+     * reaches Spring Security's own filter-level handling.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ErrorResponse.of(HttpStatus.FORBIDDEN, "You do not have permission to perform this action"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
