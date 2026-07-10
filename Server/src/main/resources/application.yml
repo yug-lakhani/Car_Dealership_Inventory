@@ -5,6 +5,11 @@ spring:
   profiles:
     active: dev
 
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+
   jpa:
     hibernate:
       ddl-auto: validate
