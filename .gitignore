@@ -1,0 +1,9 @@
+# Root-level ignore rules; each sub-project also has its own .gitignore.
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
