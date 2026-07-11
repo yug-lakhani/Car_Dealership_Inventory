@@ -1,6 +1,7 @@
 package com.dealership.inventory.controller;
 
 import com.dealership.inventory.dto.request.CreateVehicleRequest;
+import com.dealership.inventory.dto.request.RestockVehicleRequest;
 import com.dealership.inventory.dto.request.UpdateVehicleRequest;
 import com.dealership.inventory.dto.response.VehicleResponse;
 import com.dealership.inventory.service.VehicleService;
@@ -57,6 +58,17 @@ public class VehicleController {
     public ResponseEntity<VehicleResponse> updateVehicle(@PathVariable Long id,
                                                          @Valid @RequestBody UpdateVehicleRequest request) {
         return ResponseEntity.ok(vehicleService.updateVehicle(id, request));
+    }
+
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<VehicleResponse> purchaseVehicle(@PathVariable Long id) {
+        return ResponseEntity.ok(vehicleService.purchaseVehicle(id));
+    }
+
+    @PostMapping("/{id}/restock")
+    public ResponseEntity<VehicleResponse> restockVehicle(@PathVariable Long id,
+                                                          @Valid @RequestBody RestockVehicleRequest request) {
+        return ResponseEntity.ok(vehicleService.restockVehicle(id, request));
     }
 
     @DeleteMapping("/{id}")

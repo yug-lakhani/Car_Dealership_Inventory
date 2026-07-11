@@ -1,11 +1,13 @@
 package com.dealership.inventory.service.impl;
 
 import com.dealership.inventory.dto.request.CreateVehicleRequest;
+import com.dealership.inventory.dto.request.RestockVehicleRequest;
 import com.dealership.inventory.dto.request.UpdateVehicleRequest;
 import com.dealership.inventory.dto.response.VehicleResponse;
 import com.dealership.inventory.entity.Vehicle;
 import com.dealership.inventory.exception.VehicleModelAlreadyExistsException;
 import com.dealership.inventory.exception.VehicleNotFoundException;
+import com.dealership.inventory.exception.VehicleOutOfStockException;
 import com.dealership.inventory.mapper.VehicleMapper;
 import com.dealership.inventory.repository.VehicleRepository;
 import com.dealership.inventory.repository.specification.VehicleSpecifications;
@@ -95,6 +97,32 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleRepository.delete(vehicle);
     }
 
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    public VehicleResponse purchaseVehicle(Long id) {
+        Vehicle vehicle = vehicleRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new VehicleNotFoundException(id));
+
+        if (vehicle.getQuantity() == null || vehicle.getQuantity() <= 0) {
+            throw new VehicleOutOfStockException(id);
+        }
+
+        vehicle.setQuantity(vehicle.getQuantity() - 1);
+        return vehicleMapper.toResponse(vehicleRepository.save(vehicle));
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public VehicleResponse restockVehicle(Long id, RestockVehicleRequest request) {
+        validateRequest(request);
+
+        Vehicle vehicle = findVehicleById(id);
+        vehicle.setQuantity(vehicle.getQuantity() + request.quantity());
+        return vehicleMapper.toResponse(vehicleRepository.save(vehicle));
+    }
+
     private void validateRequest(CreateVehicleRequest request) {
         Set<ConstraintViolation<CreateVehicleRequest>> violations = validator.validate(request);
         if (!violations.isEmpty()) {
@@ -104,6 +132,13 @@ public class VehicleServiceImpl implements VehicleService {
 
     private void validateRequest(UpdateVehicleRequest request) {
         Set<ConstraintViolation<UpdateVehicleRequest>> violations = validator.validate(request);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+    }
+
+    private void validateRequest(RestockVehicleRequest request) {
+        Set<ConstraintViolation<RestockVehicleRequest>> violations = validator.validate(request);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }

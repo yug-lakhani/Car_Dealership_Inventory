@@ -51,6 +51,12 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
+    @ExceptionHandler(VehicleOutOfStockException.class)
+    public ResponseEntity<ErrorResponse> handleVehicleOutOfStock(VehicleOutOfStockException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
     @ExceptionHandler({AuthenticationCredentialsNotFoundException.class, InsufficientAuthenticationException.class})
     public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

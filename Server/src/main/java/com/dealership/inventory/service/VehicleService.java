@@ -1,6 +1,7 @@
 package com.dealership.inventory.service;
 
 import com.dealership.inventory.dto.request.CreateVehicleRequest;
+import com.dealership.inventory.dto.request.RestockVehicleRequest;
 import com.dealership.inventory.dto.request.UpdateVehicleRequest;
 import com.dealership.inventory.dto.response.VehicleResponse;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,8 @@ public interface VehicleService {
     VehicleResponse updateVehicle(@Positive Long id, UpdateVehicleRequest request);
 
     void deleteVehicle(@Positive Long id);
+
+    VehicleResponse purchaseVehicle(@Positive Long id);
+
+    VehicleResponse restockVehicle(@Positive Long id, RestockVehicleRequest request);
 }
