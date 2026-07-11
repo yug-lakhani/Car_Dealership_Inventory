@@ -7,9 +7,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
  * Wires JWT-based, stateless authentication into Spring Security.
@@ -17,13 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Login/registration endpoints are public; everything else requires a
  * valid bearer token, checked by {@link JwtAuthFilter} before Spring
  * Security's own {@link UsernamePasswordAuthenticationFilter} runs.
- * <p>
- * Note: the {@code AuthenticationManager}/{@code UserDetailsService} used
- * to actually authenticate a username+password login (and to load users
- * for {@link JwtAuthFilter}) will be added once the {@code User} entity
- * and auth endpoints exist. Until then, Spring Boot's autoconfigured
- * in-memory {@code UserDetailsService} fallback satisfies the bean
- * dependency so the application context still starts.
  */
 @Configuration
 @EnableMethodSecurity
@@ -38,6 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(CorsConfigurer::and)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
@@ -45,5 +45,18 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
