@@ -40,7 +40,12 @@ function LoginPage() {
         role: response.data.role,
       };
       login(userData, response.data.token);
-      navigate(from, { replace: true });
+      // If the authenticated user is an admin, send them to the admin dashboard.
+      if (userData.role === "ADMIN") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       setError(
         err.response?.data?.message ||

@@ -12,15 +12,17 @@ function Navbar() {
 
   return (
     <nav className="flex items-center justify-between bg-slate-900 px-6 py-4 text-white shadow-md">
-      <Link to="/" className="text-lg font-semibold tracking-tight">
+      <Link to={isAdmin ? "/admin" : "/"} className="text-lg font-semibold tracking-tight">
         Car Dealership Inventory
       </Link>
       <div className="flex items-center gap-4 text-sm">
         {isAuthenticated ? (
           <>
-            <Link to="/" className="hover:text-sky-400">
-              Dashboard
-            </Link>
+            {!isAdmin && (
+              <Link to="/" className="hover:text-sky-400">
+                Dashboard
+              </Link>
+            )}
             {isAdmin && (
               <Link to="/admin" className="hover:text-sky-400">
                 Admin

@@ -1,6 +1,6 @@
 import axiosClient from "./axiosClient";
 
-export const getVehicles = () => axiosClient.get("/vehicles");
+export const getVehicles = (params) => axiosClient.get("/vehicles", { params });
 
 export const searchVehicles = (params) => axiosClient.get("/vehicles/search", { params });
 
