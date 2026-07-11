@@ -1,6 +1,8 @@
 package com.dealership.inventory.exception;
 
 import com.dealership.inventory.dto.response.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,12 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, ex.getMessage()));
     }
 
+    @ExceptionHandler(VehicleModelAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleVehicleModelAlreadyExists(VehicleModelAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
     /**
      * Raised by {@code @PreAuthorize} (e.g. an authenticated non-admin
      * calling an admin-only endpoint). Without this handler it would fall
@@ -52,6 +60,19 @@ public class GlobalExceptionHandler {
         Map<String, String> fieldErrors = new LinkedHashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             fieldErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.ofValidationErrors(HttpStatus.BAD_REQUEST, "Validation failed", fieldErrors));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolations(ConstraintViolationException ex) {
+        Map<String, String> fieldErrors = new LinkedHashMap<>();
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            String path = violation.getPropertyPath().toString();
+            String field = path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : path;
+            fieldErrors.put(field, violation.getMessage());
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
