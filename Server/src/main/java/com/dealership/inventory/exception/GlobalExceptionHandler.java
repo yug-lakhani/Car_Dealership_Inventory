@@ -7,9 +7,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -40,6 +43,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleVehicleModelAlreadyExists(VehicleModelAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.of(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    @ExceptionHandler(VehicleNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleVehicleNotFound(VehicleNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(HttpStatus.NOT_FOUND, ex.getMessage()));
+    }
+
+    @ExceptionHandler({AuthenticationCredentialsNotFoundException.class, InsufficientAuthenticationException.class})
+    public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, "Authentication is required to access this resource"));
     }
 
     /**
@@ -89,6 +104,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.of(HttpStatus.BAD_REQUEST, "Request body is missing or malformed"));
     }
+
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String message = "id".equals(ex.getName())
+            ? "Invalid vehicle id"
+            : "Invalid request parameter";
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse.of(HttpStatus.BAD_REQUEST, message));
+        }
 
     /**
      * Safety net for unique-constraint violations that slip past an
