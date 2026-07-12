@@ -65,8 +65,18 @@ function DashboardPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <header className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm shadow-slate-200/50">
+    <div className="min-h-screen space-y-8 bg-gradient-to-br from-sky-50 via-white to-blue-50 p-6">
+      <header className="
+rounded-[32px]
+border
+border-sky-100
+bg-gradient-to-r
+from-white
+to-sky-50
+p-10
+shadow-xl
+shadow-sky-100/60
+">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-600">
@@ -101,7 +111,7 @@ function DashboardPage() {
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <div className="rounded-3xl bg-sky-600 px-6 py-5 text-white shadow-lg shadow-sky-300/10">
-            <p className="text-sm uppercase tracking-[0.25em] text-sky-200">Inventory value</p>
+            <p className="text-sm uppercase tracking-[0.25em] text-sky-200">💰 Inventory Value</p>
             <p className="mt-4 text-3xl font-semibold">${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
           </div>
           <div className="rounded-3xl bg-white px-6 py-5 shadow-lg shadow-slate-200/80">
@@ -115,12 +125,12 @@ function DashboardPage() {
         </div>
       </header>
 
-      <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/50">
+      <section className="grid items-stretch gap-8 xl:grid-cols-[1.35fr_0.65fr]">
+        <article className="rounded-[30px] border border-sky-100 bg-white p-8 shadow-xl shadow-sky-100/40 transition-all duration-300 hover:shadow-2xl">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-semibold text-slate-900">Search inventory</h2>
-              <p className="mt-2 text-sm text-slate-500">
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900">Search inventory</h2>
+              <p className="mt-3 text-base leading-relaxed text-slate-500">
                 Filter vehicles by model, category, or price range.
               </p>
             </div>
@@ -134,7 +144,7 @@ function DashboardPage() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Make, model, or keyword"
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-900 shadow-sm transition-all duration-300 hover:border-sky-300 hover:shadow-md focus:border-sky-500 focus:ring-4 focus:ring-sky-100 focus:shadow-lg outline-none"
                 />
               </label>
               <label className="block">
@@ -142,7 +152,7 @@ function DashboardPage() {
                 <select
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-900 shadow-sm transition-all duration-300 hover:border-sky-300 hover:shadow-md focus:border-sky-500 focus:ring-4 focus:ring-sky-100 focus:shadow-lg outline-none"
                 >
                   <option value="">All categories</option>
                   {categories.map((value) => (
@@ -182,7 +192,7 @@ function DashboardPage() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-2xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700"
+                className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 Apply filters
               </button>
@@ -195,7 +205,7 @@ function DashboardPage() {
                   setMaxPrice("");
                   refetch();
                 }}
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:border-sky-300 hover:bg-sky-50 hover:shadow-md"
               >
                 Reset filters
               </button>
@@ -215,19 +225,19 @@ function DashboardPage() {
           )}
         </article>
 
-        <aside className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/50">
-          <h2 className="text-xl font-semibold text-slate-900">Dashboard highlights</h2>
+        <aside className="flex flex-col rounded-[30px] border border-sky-100 bg-white p-8 shadow-xl shadow-sky-100/40 transition-all duration-300 hover:shadow-2xl">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Dashboard highlights</h2>
           <div className="mt-6 space-y-4 text-sm text-slate-600">
-            <div className="rounded-3xl bg-slate-50 p-4">
-              <p className="font-semibold text-slate-900">Quick tips</p>
+            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-sky-50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg">
+              <p className="text-lg font-bold tracking-tight text-slate-900">Quick tips</p>
               <p className="mt-2 leading-relaxed">Use the filters to narrow results by category or price, then purchase directly from the vehicle cards.</p>
             </div>
-            <div className="rounded-3xl bg-slate-50 p-4">
-              <p className="font-semibold text-slate-900">Stock status</p>
+            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-sky-50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg">
+              <p className="text-lg font-bold tracking-tight text-slate-900">Stock status</p>
               <p className="mt-2 leading-relaxed">Vehicles with no stock are clearly marked, so you can avoid selling unavailable cars.</p>
             </div>
-            <div className="rounded-3xl bg-slate-50 p-4">
-              <p className="font-semibold text-slate-900">Inventory refresh</p>
+            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-sky-50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg">
+              <p className="text-lg font-bold tracking-tight text-slate-900">Inventory refresh</p>
               <p className="mt-2 leading-relaxed">Press refresh any time to load the latest stock and category counts.</p>
             </div>
           </div>
@@ -235,20 +245,20 @@ function DashboardPage() {
       </section>
 
       <section>
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-900">Vehicle catalog</h2>
-            <p className="mt-2 text-sm text-slate-500">Browse all available inventory items with pricing, availability, and purchase actions.</p>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Vehicle catalog</h2>
+            <p className="mt-2 text-base leading-relaxed text-slate-600">Browse all available inventory items with pricing, availability, and purchase actions.</p>
           </div>
-          <div className="text-sm text-slate-500">
+          <div className="rounded-full bg-sky-100 px-5 py-2 text-sm font-semibold text-sky-700 shadow-sm">
             {loading ? "Loading vehicles..." : `${totalElements || vehicles.length} vehicles shown`}
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
           {loading ? (
             Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="animate-pulse rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/50">
+              <div key={index} className="animate-pulse rounded-[30px] border border-sky-100 bg-white p-6 shadow-lg" >
                 <div className="h-5 w-3/4 rounded-xl bg-slate-200"></div>
                 <div className="mt-5 space-y-3">
                   <div className="h-4 w-1/2 rounded-xl bg-slate-200"></div>
@@ -261,42 +271,84 @@ function DashboardPage() {
             vehicles.map((vehicle) => (
               <article
                 key={vehicle.id}
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/50 transition hover:-translate-y-1 hover:border-sky-200"
+                className="
+group
+rounded-[30px]
+border
+border-sky-100
+bg-white
+p-6
+shadow-lg
+shadow-sky-100/40
+transition-all
+duration-300
+hover:-translate-y-2
+hover:border-sky-300
+hover:shadow-2xl
+"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.25em] text-sky-600">
+                    <p className="inline-block rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-sky-700">
                       {vehicle.category || "General"}
                     </p>
-                    <h3 className="mt-2 text-xl font-semibold text-slate-900">
+                    <h3 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
                       {vehicle.make} {vehicle.model}
                     </h3>
                   </div>
-                  <div className="rounded-3xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">
+                  <div
+className={`rounded-full px-4 py-2 text-sm font-semibold ${
+vehicle.quantity>0
+? "bg-green-100 text-green-700"
+: "bg-red-100 text-red-600"
+}`}
+>
                     {vehicle.quantity > 0 ? "In stock" : "Out of stock"}
                   </div>
                 </div>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-3xl bg-slate-50 p-4">
-                    <p className="text-sm text-slate-500">Price</p>
+                  <div className="rounded-2xl border border-sky-100 bg-sky-50 p-5">
+                    <p className="text-sm font-medium text-slate-500">💰 Price</p>
                     <p className="mt-2 text-lg font-semibold text-slate-900">${Number(vehicle.price).toLocaleString()}</p>
                   </div>
-                  <div className="rounded-3xl bg-slate-50 p-4">
-                    <p className="text-sm text-slate-500">Quantity</p>
+                  <div className="rounded-2xl border border-sky-100 bg-blue-50 p-5">
+                    <p className="text-sm font-medium text-slate-500">📦 Quantity</p>
                     <p className="mt-2 text-lg font-semibold text-slate-900">{vehicle.quantity}</p>
                   </div>
                 </div>
 
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="text-sm text-slate-500">
+                  <div className="rounded-full bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
                     ID: <span className="font-medium text-slate-700">{vehicle.id}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => handlePurchase(vehicle.id)}
                     disabled={vehicle.quantity <= 0 || purchasingId === vehicle.id}
-                    className="inline-flex items-center justify-center rounded-2xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+                    className="
+inline-flex
+items-center
+justify-center
+rounded-full
+bg-gradient-to-r
+from-sky-500
+to-blue-600
+px-6
+py-3
+text-sm
+font-semibold
+text-white
+shadow-lg
+transition-all
+duration-300
+hover:scale-105
+hover:shadow-xl
+disabled:cursor-not-allowed
+disabled:bg-slate-400
+disabled:from-slate-400
+disabled:to-slate-400
+"
                   >
                     {vehicle.quantity <= 0
                       ? "Unavailable"
@@ -308,8 +360,8 @@ function DashboardPage() {
               </article>
             ))
           ) : (
-            <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm shadow-slate-200/50">
-              <p className="text-lg font-semibold text-slate-900">No vehicles match your filters.</p>
+            <div className="rounded-[30px] border border-dashed border-sky-200 bg-sky-50 p-12 text-center shadow-lg">
+              <p className="text-2xl font-bold text-slate-900">No vehicles match your filters.</p>
               <p className="mt-2 text-sm text-slate-500">Try resetting filters or refreshing inventory.</p>
             </div>
           )}
@@ -317,11 +369,11 @@ function DashboardPage() {
 
         {/* Pagination controls */}
         <div className="mt-6 flex items-center justify-center">
-          <nav className="inline-flex items-center gap-2 rounded-2xl bg-white/80 p-2 shadow-sm">
+          <nav className="inline-flex items-center gap-3 rounded-full border border-sky-100 bg-white px-4 py-3 shadow-lg">
             <button
               onClick={() => goToPage(Math.max(0, page - 1))}
               disabled={page <= 0}
-              className="px-3 py-1 rounded-md bg-slate-100 text-sm disabled:opacity-50"
+              className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium transition hover:bg-sky-100 disabled:opacity-50"
             >
               Prev
             </button>
@@ -335,7 +387,11 @@ function DashboardPage() {
                 <button
                   key={idx}
                   onClick={() => goToPage(idx)}
-                  className={`px-3 py-1 rounded-md text-sm ${idx === page ? "bg-sky-600 text-white" : "bg-white"}`}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-all duration-300 ${
+idx === page
+? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md"
+: "bg-white text-slate-700 hover:bg-sky-100"
+}`}
                 >
                   {idx + 1}
                 </button>
